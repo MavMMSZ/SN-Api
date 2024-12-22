@@ -1,4 +1,4 @@
-import { Schema, model, Types, type Document } from 'mongoose';
+import { Schema, model, type Document } from 'mongoose';
 
 interface Thought extends Document {
     thoughtText: string;
@@ -25,7 +25,7 @@ const thoughtSchema = new Schema<Thought>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (createdAtVal: Date) => dateFormat(createdAtVal)
+            get: (createdAtVal: Date) => createdAtVal
         },
         username: {
             type: String,
@@ -45,35 +45,11 @@ const thoughtSchema = new Schema<Thought>(
     }
 );
 
-const ReactionSchema = new Schema<Reaction>(
-    {
-        reactionId: {
-            type: String,
-            default: () => new Types.ObjectId().toString()
-        },
-        reactionBody: {
-            type: String,
-            required: true,
-            max: 280
-        },
-        username: {
-            type: String,
-            required: true
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            get: (createdAtVal: Date) => dateFormat(createdAtVal)
-        }
-    },
-    {
-        toJSON: {
-            getters: true
-        }
-    }
-);
+thoughtSchema.virtual('reactionCount').get(function() {
+    return this.reactions.length;
+});
 
 const Thought = model<Thought>('Thought', thoughtSchema);
-const Reaction = model<Reaction>('Reaction', ReactionSchema);
 
-export default { Thought };
+
+export default Thought;
