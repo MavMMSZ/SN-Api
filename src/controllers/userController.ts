@@ -69,10 +69,10 @@ export const deleteUser = async (req: Request, res: Response) => {
             return;
         }
 
-        return res.json({ message: 'User and associated thoughts deleted!' });
+        res.json({ message: 'User and associated thoughts deleted!' });
     } catch (err) {
         console.log(err);
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
 
@@ -87,15 +87,16 @@ export const addFriend = async (req: Request, res: Response) => {
         )
 
         if (!user) {
-            return res
+            res
                 .status(404)
                 .json({ message: 'No user found with this id!' });
+            return;
         }
 
-        return res.json(user);
+        res.json(user);
     } catch (err) {
         console.log(err);
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
 
@@ -108,15 +109,16 @@ export const removeFriend = async (req: Request, res: Response) => {
         );
 
         if (!user) {
-            return res
+            res
                 .status(404)
                 .json({ message: 'No user found with this id!' });
+            return;
         }
 
-        return res.json(user);
+        res.json(user);
     } catch (err) {
         console.log(err);
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
 

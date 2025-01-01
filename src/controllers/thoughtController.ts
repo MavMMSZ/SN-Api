@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Thought, User } from '../models/index.js';
+import { Thought} from '../models/index.js';
 
 
 
@@ -86,9 +86,9 @@ export const addReaction = async (req: Request, res: Response) => {
             return;
         }
 
-        return res.json(thought);
+        res.json(thought);
     } catch (err) {
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
 
@@ -105,8 +105,8 @@ export const removeReaction = async (req: Request, res: Response) => {
             return;
         }
 
-        return res.json(thought);
+        res.json(thought);
     } catch (err) {
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
