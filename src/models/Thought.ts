@@ -8,7 +8,7 @@ interface Thought extends Document {
 }
 
 interface Reaction extends Document {
-    reactionId: string;
+    reactionId: Schema.Types.ObjectId;
     reactionBody: string;
     username: string;
     createdAt: Date;
@@ -17,8 +17,8 @@ interface Reaction extends Document {
 const reactionSchema = new Schema<Reaction>(
     {
         reactionId: {
-            type: String,
-            default: () => new Types.ObjectId().toString()
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId()
         },
         reactionBody: {
             type: String,
@@ -39,7 +39,8 @@ const reactionSchema = new Schema<Reaction>(
     {
         toJSON: {
             getters: true
-        }
+        },
+        id: false
     }
 );
 
@@ -54,7 +55,7 @@ const thoughtSchema = new Schema<Thought>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (createdAtVal: Date) => createdAtVal
+            // get: (createdAtVal: Date) => createdAtVal
         },
         username: {
             type: String,
@@ -64,8 +65,10 @@ const thoughtSchema = new Schema<Thought>(
     },
     {
         toJSON: {
+            virtuals: true,
             getters: true
-        }
+        },
+        id: false
     }
 );
 

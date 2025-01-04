@@ -1,10 +1,10 @@
-import { Schema, Types, model, type Document } from 'mongoose';
+import { Schema, model, type Document } from 'mongoose';
 
 interface User extends Document {
     username: string;
     email: string;
-    thoughts: Types.ObjectId[];
-    friends: Types.ObjectId[];
+    thoughts: Schema.Types.ObjectId[];
+    friends: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema<User>(

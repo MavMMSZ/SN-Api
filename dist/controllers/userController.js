@@ -85,7 +85,7 @@ export const addFriend = async (req, res) => {
 };
 export const removeFriend = async (req, res) => {
     try {
-        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $pull: { friends: { friendId: req.params.friendId } } }, { runValidators: true, new: true });
+        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $pull: { friends: req.params.friendId } }, { runValidators: true, new: true });
         if (!user) {
             res
                 .status(404)
