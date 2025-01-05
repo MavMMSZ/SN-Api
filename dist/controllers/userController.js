@@ -1,37 +1,31 @@
-import { User, Thought } from '../models/index.js';
-export const headCount = async () => {
-    try {
-        const numberOfUsers = await User.aggregate().count('userCount');
-        return numberOfUsers;
-    }
-    catch (err) {
-        console.error(err);
-        return 0; // or any default value
-    }
-};
+import { User } from '../models/index.js';
+// export const headCount = async () => {
+//     try {
+//         const numberOfUsers = await User.aggregate().count('userCount');
+//         return numberOfUsers;
+//     } catch (err) {
+//         console.error(err);
+//         return 0; // or any default value
+//     }
+// }
 export const getAllUsers = async (_req, res) => {
     try {
         const users = await User.find();
-        const userObj = {
-            users,
-            headCount: await headCount(),
-        };
-        res.json(userObj);
+        res.json(users);
     }
     catch (err) {
         res.status(500).json(err);
     }
 };
 export const getUserById = async (req, res) => {
-    const { userID } = req.params;
     try {
-        const user = await User.findById(userID);
-        if (user) {
-            res.json(user);
-        }
-        else {
+        const user = await User.findOne({ _id: req.params.userID });
+        if (!user) {
             res.status(404).json({ message: 'No user found with this id!' });
+            return;
         }
+        res.json(user);
+        return;
     }
     catch (err) {
         res.status(500).json(err);
@@ -46,6 +40,20 @@ export const createUser = async (req, res) => {
         res.status(500).json(err);
     }
 };
+export const updateUser = async (req, res) => {
+    try {
+        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $set: req.body }, { new: true, runValidators: true });
+        if (!user) {
+            res.status(404).json({ message: 'No user found with this id!' });
+            return;
+        }
+        res.json(user);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
 export const deleteUser = async (req, res) => {
     try {
         const user = await User.findOneAndDelete({ _id: req.params.userID });
@@ -53,23 +61,19 @@ export const deleteUser = async (req, res) => {
             res.status(404).json({ message: 'No user found with this id!' });
             return;
         }
-        const thought = await Thought.findOneAndUpdate({ users: req.params.userID }, { $pull: { users: req.params.userID } }, { new: true });
-        if (!thought) {
-            res.status(404).json({ message: 'No thought found with this user id!' });
-            return;
-        }
         res.json({ message: 'User and associated thoughts deleted!' });
     }
     catch (err) {
         console.log(err);
         res.status(500).json(err);
+        return;
     }
 };
 export const addFriend = async (req, res) => {
     console.log('Adding a friend');
     console.log(req.params);
     try {
-        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $addToSet: { friends: req.body } }, { new: true });
+        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $addToSet: { friends: req.body.frie } }, { new: true });
         if (!user) {
             res
                 .status(404)
@@ -85,7 +89,7 @@ export const addFriend = async (req, res) => {
 };
 export const removeFriend = async (req, res) => {
     try {
-        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $pull: { friends: req.params.friendId } }, { runValidators: true, new: true });
+        const user = await User.findOneAndUpdate({ _id: req.params.userID }, { $pull: { friends: req.params.friendId } }, { new: true });
         if (!user) {
             res
                 .status(404)
@@ -93,9 +97,11 @@ export const removeFriend = async (req, res) => {
             return;
         }
         res.json(user);
+        return;
     }
     catch (err) {
         console.log(err);
         res.status(500).json(err);
+        return;
     }
 };

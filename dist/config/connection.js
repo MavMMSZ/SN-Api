@@ -1,13 +1,3 @@
 import mongoose from 'mongoose';
-const db = async () => {
-    try {
-        await mongoose.connect(process.env.MONGOD_URI || 'mongodb://localhost:27017/sn-api');
-        console.log('Database connected');
-        return mongoose.connection;
-    }
-    catch (error) {
-        console.error('Database connection error');
-        throw new Error("Database connection error");
-    }
-};
-export default db;
+mongoose.connect('mongodb://127.0.0.1:27017/developersApplications');
+export default mongoose.connection;

@@ -3,8 +3,8 @@ const router = Router();
 
 import {
     getAllThoughts,
-    getThoughtById,
     createThought,
+    getThoughtById,
     updateThought,
     deleteThought,
     addReaction,

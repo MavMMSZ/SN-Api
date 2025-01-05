@@ -1,8 +1,8 @@
 import { Schema, model, Types } from 'mongoose';
 const reactionSchema = new Schema({
     reactionId: {
-        type: String,
-        default: () => new Types.ObjectId().toString()
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId()
     },
     reactionBody: {
         type: String,
@@ -22,7 +22,8 @@ const reactionSchema = new Schema({
 }, {
     toJSON: {
         getters: true
-    }
+    },
+    id: false
 });
 const thoughtSchema = new Schema({
     thoughtText: {
@@ -34,7 +35,7 @@ const thoughtSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        get: (createdAtVal) => createdAtVal
+        // get: (createdAtVal: Date) => createdAtVal
     },
     username: {
         type: String,
@@ -43,8 +44,10 @@ const thoughtSchema = new Schema({
     reactions: [reactionSchema]
 }, {
     toJSON: {
+        virtuals: true,
         getters: true
-    }
+    },
+    id: false
 });
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
