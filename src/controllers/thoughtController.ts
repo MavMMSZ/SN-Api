@@ -1,9 +1,7 @@
-import Thought from '../models/Thought.js';
-import  User  from '../models/User.js';
+import { Thought } from '../models/Thought.js';
+import { User } from '../models/User.js';
 import { Request, Response } from 'express';
-
-
-export const getAllThoughts = async (_req: Request, res: Response) => {
+export const getThoughts = async (_req: Request, res: Response) => {
     try {
         const thoughts = await Thought.find();
         res.json(thoughts);
@@ -11,16 +9,17 @@ export const getAllThoughts = async (_req: Request, res: Response) => {
         res.status(500).json(err);
     }
 }
-export const getThoughtById = async (req: Request, res: Response) => {
+export const getSingleThought = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findOne({ _id: req.params.thoughtId })
         if (!thought) {
-         res.status(404).json({ message: 'No thought with that ID' });
+            return res.status(404).json({ message: 'No thought with that ID' });
         }
-         res.json(thought);
+        res.json(thought);
+        return;
     } catch (err) {
         res.status(500).json(err);
-        return
+        return;
     }
 }
 export const createThought = async (req: Request, res: Response) => {
@@ -32,7 +31,7 @@ export const createThought = async (req: Request, res: Response) => {
             { new: true }
         );
         if (!user) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: 'Thought created, but found no user with that ID',
             })
         }
@@ -41,6 +40,7 @@ export const createThought = async (req: Request, res: Response) => {
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
+        return;
     }
 }
 export const updateThought = async (req: Request, res: Response) => {
@@ -51,7 +51,7 @@ export const updateThought = async (req: Request, res: Response) => {
             { runValidators: true, new: true }
         );
         if (!thought) {
-            res.status(404).json({ message: 'No thought with this id!' });
+            return res.status(404).json({ message: 'No thought with this id!' });
         }
         res.json(thought);
         return;
@@ -65,7 +65,7 @@ export const deleteThought = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
         if (!thought) {
-            res.status(404).json({ message: 'No thought with that ID' });
+            return res.status(404).json({ message: 'No thought with that ID' });
         }
         await User.findOneAndUpdate(
             { thoughts: req.params.thoughtId },
@@ -86,7 +86,7 @@ export const addReaction = async (req: Request, res: Response) => {
             { runValidators: true, new: true }
         );
         if (!thought) {
-            res.status(404).json({ message: 'No thought with this id!' });
+            return res.status(404).json({ message: 'No thought with this id!' });
         }
         res.json(thought);
         return;
@@ -104,7 +104,7 @@ export const deleteReaction = async (req: Request, res: Response) => {
             { new: true }
         );
         if (!thought) {
-            res.status(404).json({ message: 'No thought with this id!' });
+            return res.status(404).json({ message: 'No thought with this id!' });
         }
         res.json(thought);
         return;
